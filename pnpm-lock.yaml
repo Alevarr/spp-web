@@ -35,16 +35,16 @@ dependencies:
 
 devDependencies:
   '@types/react':
-    specifier: ^18.2.66
+    specifier: ^18.2.74
     version: 18.2.74
   '@types/react-dom':
-    specifier: ^18.2.22
+    specifier: ^18.2.23
     version: 18.2.23
   '@typescript-eslint/eslint-plugin':
-    specifier: ^7.2.0
+    specifier: ^7.5.0
     version: 7.5.0(@typescript-eslint/parser@7.5.0)(eslint@8.57.0)(typescript@5.4.3)
   '@typescript-eslint/parser':
-    specifier: ^7.2.0
+    specifier: ^7.5.0
     version: 7.5.0(eslint@8.57.0)(typescript@5.4.3)
   '@vitejs/plugin-react':
     specifier: ^4.2.1
@@ -68,10 +68,10 @@ devDependencies:
     specifier: ^3.4.3
     version: 3.4.3
   typescript:
-    specifier: ^5.2.2
+    specifier: ^5.4.3
     version: 5.4.3
   vite:
-    specifier: ^5.2.0
+    specifier: ^5.2.7
     version: 5.2.7
 
 packages:
@@ -4956,7 +4956,6 @@ packages:
     id: github.com/react-hook-form/resolvers/1bfc6abbe99677fe574f0919f84b385cc4e686f4
     name: '@hookform/resolvers'
     version: 2.9.1
-    prepare: true
     requiresBuild: true
     peerDependencies:
       react-hook-form: ^7.0.0
