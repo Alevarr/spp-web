@@ -57,7 +57,12 @@ export default function HeaderNavbar() {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Button as={ReactRouterLink} color="primary" to="/" variant="flat">
+          <Button
+            as={ReactRouterLink}
+            color="primary"
+            to="/sign-up"
+            variant="flat"
+          >
             Зарегестрироваться
           </Button>
         </NavbarItem>

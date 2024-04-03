@@ -74,7 +74,7 @@ export default function SignUpPage() {
             color="primary"
             // isLoading={isSubmitting}
           >
-            Войти
+            Зарегестрироваться
           </Button>
 
           <Link
@@ -84,7 +84,7 @@ export default function SignUpPage() {
             to="/sign-up"
             className="justify-self-center"
           >
-            Зарегестрироваться
+            Войти
           </Link>
         </div>
       </form>
