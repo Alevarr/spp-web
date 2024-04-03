@@ -52,13 +52,13 @@ export default function HeaderNavbar() {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <Link as={ReactRouterLink} to="/">
-            Login
+          <Link as={ReactRouterLink} to="/sign-in">
+            Войти
           </Link>
         </NavbarItem>
         <NavbarItem>
           <Button as={ReactRouterLink} color="primary" to="/" variant="flat">
-            Sign Up
+            Зарегестрироваться
           </Button>
         </NavbarItem>
       </NavbarContent>

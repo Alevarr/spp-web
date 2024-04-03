@@ -5,6 +5,7 @@ import Layout from "./pages/layout";
 import DetailsPage from "./pages/details-page";
 import PurchasesPage from "./pages/purchases-page";
 import SellsPage from "./pages/sells-page";
+import SignInPage from "./pages/sign-in-page";
 
 const router = createBrowserRouter([
   {
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
       },
       { path: "purchases", element: <PurchasesPage /> },
       { path: "sells", element: <SellsPage /> },
-      // { path: "sign-in", element: <SignInPage /> },
+      { path: "sign-in", element: <SignInPage /> },
     ],
   },
 ]);
