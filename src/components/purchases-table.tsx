@@ -19,6 +19,7 @@ export default function PurchasesTable() {
       const res = await fetcher(url, {
         method: "GET",
       });
+      if (!res.ok || !res) return [];
       return await res.json();
     },
     initialData: [],
