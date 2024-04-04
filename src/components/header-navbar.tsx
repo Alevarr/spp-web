@@ -19,9 +19,9 @@ import Cookies from "js-cookie";
 
 export default function HeaderNavbar() {
   const location = useLocation().pathname;
-  useAutoCheckTokenExpiration(() =>
-    toast.info("Сессия зарегестрированного пользователя завершена.")
-  );
+  useAutoCheckTokenExpiration(() => {
+    toast.info("Сессия зарегестрированного пользователя завершена.");
+  });
 
   const user = useUser();
   const navigate = useNavigate();
@@ -36,7 +36,17 @@ export default function HeaderNavbar() {
         </Button>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        {isAdmin ? (
+        <NavbarItem isActive={location === "/details"}>
+          <Link
+            className="[data[active=true]]:font-bold"
+            as={ReactRouterLink}
+            color="foreground"
+            to="/details"
+          >
+            Детали
+          </Link>
+        </NavbarItem>
+        {isAdmin && (
           <>
             <NavbarItem isActive={location === "/purchases"}>
               <Link
@@ -59,17 +69,6 @@ export default function HeaderNavbar() {
               </Link>
             </NavbarItem>
           </>
-        ) : (
-          <NavbarItem isActive={location === "/details"}>
-            <Link
-              className="[data[active=true]]:font-bold"
-              as={ReactRouterLink}
-              color="foreground"
-              to="/details"
-            >
-              Детали
-            </Link>
-          </NavbarItem>
         )}
       </NavbarContent>
       <NavbarContent justify="end">

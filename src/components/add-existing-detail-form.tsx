@@ -7,16 +7,30 @@ import {
   Button,
 } from "@nextui-org/react";
 import { RussianRuble } from "lucide-react";
-import { details } from "../pages/purchases-page";
 // import { useState, useTransition } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { API_ENDPOINTS } from "../api-endpoints";
+import { Detail } from "../tyeps";
+import { fetcher } from "../utils/fetcher";
+import { toast } from "sonner";
 
 const addExistingDetailSchema = z.object({
   detail_id: z.string().min(1, { message: "Поле обязательно к заполнению." }),
-  count: z.number().min(1, { message: "Поле обязательно к заполнению." }),
-  total_price: z.number().min(1, { message: "Поле обязательно к заполнению." }),
+  count: z
+    .string()
+    .transform(Number)
+    .refine((value) => !isNaN(value), {
+      message: "Поле должно быть числом.",
+    }),
+  total_price: z
+    .string()
+    .transform(Number)
+    .refine((value) => !isNaN(value), {
+      message: "Поле должно быть числом.",
+    }),
 });
 
 type AddExistingDetailSchemaType = z.infer<typeof addExistingDetailSchema>;
@@ -26,9 +40,20 @@ export default function AddExistingDetailForm({
 }: {
   onClose: () => void;
 }) {
-  //   const [isSubmitting, startSubmitting] = useTransition();
+  const queryClient = useQueryClient();
 
   //   const [errorMessage, setErrorMessage] = useState<string>();
+  const { data: details } = useQuery<Detail[]>({
+    queryKey: ["details"],
+    queryFn: async () => {
+      const url = import.meta.env.VITE_API_URL + API_ENDPOINTS.DETAILS;
+      const res = await fetch(url, {
+        method: "GET",
+      });
+      return await res.json();
+    },
+    initialData: [],
+  });
 
   const {
     register,
@@ -37,18 +62,22 @@ export default function AddExistingDetailForm({
   } = useForm<AddExistingDetailSchemaType>({
     resolver: zodResolver(addExistingDetailSchema),
   });
-  const onSubmit: SubmitHandler<AddExistingDetailSchemaType> = (data) => {
-    console.log(data);
-    // startSubmitting(async () => {
-    //   try {
-    //     await signInUser(
-    //       { email: data.username, password: data.password },
-    //       searchParams.get("callbackUrl")
-    //     );
-    //   } catch (error) {
-    //     setErrorMessage(t("errors.unknown"));
-    //   }
-    // });
+  const onSubmit: SubmitHandler<AddExistingDetailSchemaType> = async (data) => {
+    const purchaseUrl =
+      import.meta.env.VITE_API_URL + API_ENDPOINTS.ADD_PURCHASE;
+
+    const resPurchase = await fetcher(purchaseUrl, {
+      method: "POST",
+      body: JSON.stringify({
+        detail: { ...details.find((d) => d.id === Number(data.detail_id)) },
+        totalPrice: Math.floor(data.total_price / data.count),
+        count: data.count,
+      }),
+    });
+    if (!resPurchase.ok) toast.error("Ошибка");
+    toast.success("Успешно");
+    queryClient.invalidateQueries({ queryKey: ["purchases"] });
+    onClose();
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -58,12 +87,12 @@ export default function AddExistingDetailForm({
           isRequired
           items={details}
           label="Деталь"
-          placeholder="Название детали"
+          placeholder="Название и цвет детали"
           {...register("detail_id")}
         >
           {(detail) => (
             <SelectItem key={detail.id}>
-              {detail.name + " " + detail.color}
+              {detail.name + " " + (detail.color ? detail.color.name : "")}
             </SelectItem>
           )}
         </Select>

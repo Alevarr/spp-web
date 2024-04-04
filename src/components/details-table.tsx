@@ -8,18 +8,15 @@ import {
   Button,
 } from "@nextui-org/react";
 import useUser from "./hooks/useUser";
-import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { API_ENDPOINTS } from "../api-endpoints";
 import { Detail } from "../tyeps";
 
 export default function DetailsTable() {
   const user = useUser();
-  const navigate = useNavigate();
   const isUser = user
     ? user?.roles.includes("ROLE_USER") && !user.roles.includes("ROLE_ADMIN")
     : false;
-  if (!isUser) navigate("/sells");
 
   const { data } = useQuery<Detail[]>({
     queryKey: ["details"],

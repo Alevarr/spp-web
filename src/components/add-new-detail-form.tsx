@@ -10,7 +10,7 @@ import { RussianRuble } from "lucide-react";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { API_ENDPOINTS } from "../api-endpoints";
 import { fetcher } from "../utils/fetcher";
 import { toast } from "sonner";
@@ -37,6 +37,8 @@ type AddNewDetailSchemaType = z.infer<typeof addNewDetailSchema>;
 
 export default function AddNewDetailForm({ onClose }: { onClose: () => void }) {
   //   const [errorMessage, setErrorMessage] = useState<string>();
+  const queryClient = useQueryClient();
+
   const { data: colors, isLoading } = useQuery<Color[]>({
     queryKey: ["colors"],
     queryFn: async () => {
@@ -90,6 +92,9 @@ export default function AddNewDetailForm({ onClose }: { onClose: () => void }) {
     });
     if (!resPurchase.ok) toast.error("Ошибка");
     toast.success("Успешно");
+    queryClient.invalidateQueries({ queryKey: ["purchases"] });
+    queryClient.invalidateQueries({ queryKey: ["details"] });
+    onClose();
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

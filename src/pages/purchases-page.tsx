@@ -15,48 +15,6 @@ import AddNewDetailForm from "../components/add-new-detail-form";
 import useUser from "../components/hooks/useUser";
 import { useNavigate } from "react-router-dom";
 
-export const colors = [
-  {
-    id: "1",
-    name: "Красный",
-  },
-  {
-    id: "2",
-    name: "Синий",
-  },
-  {
-    id: "3",
-    name: "Черный",
-  },
-  {
-    id: "4",
-    name: "Черный с изумрудно-зеленым отливом",
-  },
-];
-
-export const details = [
-  {
-    id: "1",
-    name: "Дверь",
-    color: "Красный",
-  },
-  {
-    id: "2",
-    name: "Стул",
-    color: "Красный",
-  },
-  {
-    id: "3",
-    name: "Шкаф",
-    color: "Черный",
-  },
-  {
-    id: "4",
-    name: "Резиновая пизда",
-    color: "Синий",
-  },
-];
-
 export default function PurchasesPage() {
   const user = useUser();
   const navigate = useNavigate();
