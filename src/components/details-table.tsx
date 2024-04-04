@@ -8,9 +8,11 @@ import {
   Button,
 } from "@nextui-org/react";
 import useUser from "./hooks/useUser";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { API_ENDPOINTS } from "../api-endpoints";
 import { Detail } from "../tyeps";
+import { fetcher } from "../utils/fetcher";
+import { toast } from "sonner";
 
 export default function DetailsTable() {
   const user = useUser();
@@ -29,6 +31,7 @@ export default function DetailsTable() {
     },
     initialData: [],
   });
+  const queryClient = useQueryClient();
 
   return (
     <Table aria-label="Details table">
@@ -47,7 +50,28 @@ export default function DetailsTable() {
             <TableCell>{detail.count}</TableCell>
             <TableCell>{detail.sellPrice}</TableCell>
             <TableCell>
-              <Button size="sm" color="success" isDisabled={!isUser}>
+              <Button
+                size="sm"
+                color="success"
+                isDisabled={!isUser}
+                onClick={async () => {
+                  const url = import.meta.env.VITE_API_URL + API_ENDPOINTS.SELL;
+
+                  const res = await fetcher(url, {
+                    method: "POST",
+                    body: JSON.stringify({
+                      username: user?.sub,
+                      detail,
+                      count: 1,
+                      totalPrice: detail.sellPrice,
+                    }),
+                  });
+                  if (!res.ok) toast.error("Ошибка");
+                  toast.success("Успешно");
+                  queryClient.invalidateQueries({ queryKey: ["sells"] });
+                  queryClient.invalidateQueries({ queryKey: ["details"] });
+                }}
+              >
                 Купить
               </Button>
             </TableCell>

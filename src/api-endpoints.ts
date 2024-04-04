@@ -4,8 +4,15 @@ export const API_ENDPOINTS = {
   COLORS: "/admin/colors",
   DETAILS: "/details",
   PURCHASES: "/admin/purchases",
+  SELLS: "/admin/sells",
 
   ADD_NEW_DETAIL: "/admin/details",
   ADD_PURCHASE: "/admin/purchase",
-  //   addNewDetail: "/",
+  SELL: "/user/sell",
+
+  /**PUT */
+  SET_IS_PAID: (id: number) => `/admin/sell/${id}/true`,
+
+  /**DELETE */
+  DELETE_SELL: (id: number) => `/admin/sell/${id}`,
 };

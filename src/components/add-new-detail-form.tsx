@@ -63,7 +63,6 @@ export default function AddNewDetailForm({ onClose }: { onClose: () => void }) {
     },
   });
   const onSubmit: SubmitHandler<AddNewDetailSchemaType> = async (data) => {
-    console.log(data);
     const url = import.meta.env.VITE_API_URL + API_ENDPOINTS.ADD_NEW_DETAIL;
     const res = await fetcher(url, {
       method: "POST",

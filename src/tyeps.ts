@@ -22,3 +22,17 @@ export type Purchase = {
   count: number;
   totalPrice: number;
 };
+
+export type SellUser = {
+  id: number;
+  username: string;
+};
+
+export type Sell = {
+  id: number;
+  user: SellUser;
+  detail: Detail;
+  totalPrice: number;
+  count: number;
+  paid: boolean;
+};
