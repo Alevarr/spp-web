@@ -7,6 +7,8 @@ import {
   TableCell,
   Button,
 } from "@nextui-org/react";
+import useUser from "./hooks/useUser";
+import { useNavigate } from "react-router-dom";
 
 const dummyData = [
   {
@@ -42,6 +44,12 @@ const dummyData = [
 ];
 
 export default function DetailsTable() {
+  const user = useUser();
+  const navigate = useNavigate();
+  const isUser = user
+    ? user?.roles.includes("ROLE_USER") && !user.roles.includes("ROLE_ADMIN")
+    : false;
+  if (!isUser) navigate("/sells");
   return (
     <Table aria-label="Details table">
       <TableHeader className="font-bold">
@@ -59,7 +67,7 @@ export default function DetailsTable() {
             <TableCell>{data.count}</TableCell>
             <TableCell>{data.sell_price}</TableCell>
             <TableCell>
-              <Button size="sm" color="success">
+              <Button size="sm" color="success" isDisabled={!isUser}>
                 Купить
               </Button>
             </TableCell>

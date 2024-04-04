@@ -33,7 +33,6 @@ export default function SignUpPage() {
   });
 
   const onSubmit: SubmitHandler<SignUpSchemaType> = async (data) => {
-    console.log(data);
     const url = import.meta.env.VITE_API_URL + API_ENDPOINTS.SIGN_UP;
     const betterData = {
       ...data,
@@ -86,7 +85,7 @@ export default function SignUpPage() {
             id="LINK_sign_up_from_sign_in"
             as={ReactRouterDomLink}
             size="sm"
-            to="/sign-up"
+            to="/sign-in"
             className="justify-self-center"
           >
             Войти

@@ -24,8 +24,9 @@ export default function HeaderNavbar() {
   );
 
   const user = useUser();
-  console.log(user);
   const navigate = useNavigate();
+
+  const isAdmin = user ? user?.roles.includes("ROLE_ADMIN") : false;
 
   return (
     <Navbar maxWidth="full">
@@ -35,36 +36,41 @@ export default function HeaderNavbar() {
         </Button>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem isActive={location === "/details"}>
-          <Link
-            className="[data[active=true]]:font-bold"
-            as={ReactRouterLink}
-            color="foreground"
-            to="/details"
-          >
-            Детали
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive={location === "/purchases"}>
-          <Link
-            className="[data[active=true]]:font-bold"
-            as={ReactRouterLink}
-            color="foreground"
-            to="/purchases"
-          >
-            Покупки
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive={location === "/sells"}>
-          <Link
-            className="[data[active=true]]:font-bold"
-            as={ReactRouterLink}
-            color="foreground"
-            to="/sells"
-          >
-            Продажи
-          </Link>
-        </NavbarItem>
+        {isAdmin ? (
+          <>
+            <NavbarItem isActive={location === "/purchases"}>
+              <Link
+                className="[data[active=true]]:font-bold"
+                as={ReactRouterLink}
+                color="foreground"
+                to="/purchases"
+              >
+                Покупки
+              </Link>
+            </NavbarItem>
+            <NavbarItem isActive={location === "/sells"}>
+              <Link
+                className="[data[active=true]]:font-bold"
+                as={ReactRouterLink}
+                color="foreground"
+                to="/sells"
+              >
+                Продажи
+              </Link>
+            </NavbarItem>
+          </>
+        ) : (
+          <NavbarItem isActive={location === "/details"}>
+            <Link
+              className="[data[active=true]]:font-bold"
+              as={ReactRouterLink}
+              color="foreground"
+              to="/details"
+            >
+              Детали
+            </Link>
+          </NavbarItem>
+        )}
       </NavbarContent>
       <NavbarContent justify="end">
         {!user ? (

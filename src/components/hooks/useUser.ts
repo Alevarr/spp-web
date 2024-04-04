@@ -14,7 +14,6 @@ const useUser = () => {
         return;
       }
       const decodedToken: User = jwtDecode(token);
-      console.log(decodedToken);
       setUser({
         sub: decodedToken.sub,
         roles: decodedToken.roles,

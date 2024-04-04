@@ -12,6 +12,8 @@ import Title from "../components/title";
 import { Plus } from "lucide-react";
 import AddExistingDetailForm from "../components/add-existing-detail-form";
 import AddNewDetailForm from "../components/add-new-detail-form";
+import useUser from "../components/hooks/useUser";
+import { useNavigate } from "react-router-dom";
 
 export const colors = [
   {
@@ -56,6 +58,11 @@ export const details = [
 ];
 
 export default function PurchasesPage() {
+  const user = useUser();
+  const navigate = useNavigate();
+  const isAdmin = user ? user?.roles.includes("ROLE_ADMIN") : false;
+  if (!isAdmin) navigate("/details");
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
