@@ -9,39 +9,9 @@ import {
 } from "@nextui-org/react";
 import useUser from "./hooks/useUser";
 import { useNavigate } from "react-router-dom";
-
-const dummyData = [
-  {
-    name: "Дверь",
-    color: "Красный",
-    sell_price: 1200,
-    count: 17,
-  },
-  {
-    name: "Окно",
-    color: "Синий",
-    sell_price: 800,
-    count: 5,
-  },
-  {
-    name: "Стол",
-    color: "Белый",
-    sell_price: 500,
-    count: 10,
-  },
-  {
-    name: "Кухня",
-    color: "Черный",
-    sell_price: 2000,
-    count: 3,
-  },
-  {
-    name: "Шкаф",
-    color: "Зеленый",
-    sell_price: 1500,
-    count: 8,
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { API_ENDPOINTS } from "../api-endpoints";
+import { Detail } from "../tyeps";
 
 export default function DetailsTable() {
   const user = useUser();
@@ -50,6 +20,19 @@ export default function DetailsTable() {
     ? user?.roles.includes("ROLE_USER") && !user.roles.includes("ROLE_ADMIN")
     : false;
   if (!isUser) navigate("/sells");
+
+  const { data } = useQuery<Detail[]>({
+    queryKey: ["details"],
+    queryFn: async () => {
+      const url = import.meta.env.VITE_API_URL + API_ENDPOINTS.DETAILS;
+      const res = await fetch(url, {
+        method: "GET",
+      });
+      return await res.json();
+    },
+    initialData: [],
+  });
+
   return (
     <Table aria-label="Details table">
       <TableHeader className="font-bold">
@@ -60,12 +43,12 @@ export default function DetailsTable() {
         <TableColumn className="font-bold">ДЕЙСТВИЯ</TableColumn>
       </TableHeader>
       <TableBody>
-        {dummyData.map((data, index) => (
+        {data.map((detail, index) => (
           <TableRow key={index}>
-            <TableCell>{data.name}</TableCell>
-            <TableCell>{data.color}</TableCell>
-            <TableCell>{data.count}</TableCell>
-            <TableCell>{data.sell_price}</TableCell>
+            <TableCell>{detail.name}</TableCell>
+            <TableCell>{detail.color ? detail.color.name : "Нет"}</TableCell>
+            <TableCell>{detail.count}</TableCell>
+            <TableCell>{detail.sellPrice}</TableCell>
             <TableCell>
               <Button size="sm" color="success" isDisabled={!isUser}>
                 Купить

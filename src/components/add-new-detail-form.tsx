@@ -7,45 +7,89 @@ import {
   Button,
 } from "@nextui-org/react";
 import { RussianRuble } from "lucide-react";
-import { colors } from "../pages/purchases-page";
 import { z } from "zod";
-// import { useState, useTransition } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
+import { API_ENDPOINTS } from "../api-endpoints";
+import { fetcher } from "../utils/fetcher";
+import { toast } from "sonner";
+import { Color } from "../tyeps";
 
 const addNewDetailSchema = z.object({
   name: z.string().min(1, { message: "Поле обязательно к заполнению." }),
   color_id: z.string().min(1, { message: "Поле обязательно к заполнению." }),
-  count: z.number().min(1, { message: "Поле обязательно к заполнению." }),
-  total_price: z.number().min(1, { message: "Поле обязательно к заполнению." }),
+  count: z
+    .string()
+    .transform(Number)
+    .refine((value) => !isNaN(value), {
+      message: "Поле должно быть числом.",
+    }),
+  total_price: z
+    .string()
+    .transform(Number)
+    .refine((value) => !isNaN(value), {
+      message: "Поле должно быть числом.",
+    }),
 });
 
 type AddNewDetailSchemaType = z.infer<typeof addNewDetailSchema>;
 
 export default function AddNewDetailForm({ onClose }: { onClose: () => void }) {
-  //   const [isSubmitting, startSubmitting] = useTransition();
-
   //   const [errorMessage, setErrorMessage] = useState<string>();
-
+  const { data: colors, isLoading } = useQuery<Color[]>({
+    queryKey: ["colors"],
+    queryFn: async () => {
+      const url = import.meta.env.VITE_API_URL + API_ENDPOINTS.COLORS;
+      const res = await fetcher(url, {
+        method: "GET",
+      });
+      if (!res.ok) toast.error("Ошибка при получении доступных цветов.");
+      return await res.json();
+    },
+    initialData: [],
+  });
   const {
     register,
     handleSubmit,
     // formState: { errors },
   } = useForm<AddNewDetailSchemaType>({
     resolver: zodResolver(addNewDetailSchema),
+    defaultValues: {
+      count: 0,
+      total_price: 0,
+    },
   });
-  const onSubmit: SubmitHandler<AddNewDetailSchemaType> = (data) => {
+  const onSubmit: SubmitHandler<AddNewDetailSchemaType> = async (data) => {
     console.log(data);
-    // startSubmitting(async () => {
-    //   try {
-    //     await signInUser(
-    //       { email: data.username, password: data.password },
-    //       searchParams.get("callbackUrl")
-    //     );
-    //   } catch (error) {
-    //     setErrorMessage(t("errors.unknown"));
-    //   }
-    // });
+    const url = import.meta.env.VITE_API_URL + API_ENDPOINTS.ADD_NEW_DETAIL;
+    const res = await fetcher(url, {
+      method: "POST",
+      body: JSON.stringify({
+        name: data.name,
+        color: {
+          ...colors.find((color) => color.id === Number(data.color_id)),
+        },
+        sellPrice: Math.floor(data.total_price / data.count),
+        count: data.count,
+      }),
+    });
+
+    if (!res.ok) toast.error("Ошибка");
+    const detail = await res.json();
+    const purchaseUrl =
+      import.meta.env.VITE_API_URL + API_ENDPOINTS.ADD_PURCHASE;
+
+    const resPurchase = await fetcher(purchaseUrl, {
+      method: "POST",
+      body: JSON.stringify({
+        detail: { ...detail },
+        totalPrice: Math.floor(data.total_price / data.count),
+        count: data.count,
+      }),
+    });
+    if (!resPurchase.ok) toast.error("Ошибка");
+    toast.success("Успешно");
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -61,6 +105,7 @@ export default function AddNewDetailForm({ onClose }: { onClose: () => void }) {
         <Select
           isRequired
           items={colors}
+          isLoading={isLoading}
           label="Цвет"
           placeholder="Цвет детали"
           {...register("color_id")}
@@ -89,7 +134,7 @@ export default function AddNewDetailForm({ onClose }: { onClose: () => void }) {
         <Button color="danger" variant="flat" onPress={onClose}>
           Закрыть
         </Button>
-        <Button color="primary" type="submit">
+        <Button id="submitnewdetail" color="primary" type="submit">
           Готово
         </Button>
       </ModalFooter>

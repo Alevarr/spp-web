@@ -6,41 +6,24 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/react";
-
-const dummyData = [
-  {
-    name: "Дверь",
-    color: "Красный",
-    total_price: 12000,
-    count: 170,
-  },
-  {
-    name: "Окно",
-    color: "Синий",
-    total_price: 8000,
-    count: 50,
-  },
-  {
-    name: "Стол",
-    color: "Белый",
-    total_price: 5000,
-    count: 100,
-  },
-  {
-    name: "Кухня",
-    color: "Черный",
-    total_price: 20000,
-    count: 30,
-  },
-  {
-    name: "Шкаф",
-    color: "Зеленый",
-    total_price: 15000,
-    count: 80,
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { API_ENDPOINTS } from "../api-endpoints";
+import { Purchase } from "../tyeps";
+import { fetcher } from "../utils/fetcher";
 
 export default function PurchasesTable() {
+  const { data } = useQuery<Purchase[]>({
+    queryKey: ["purchases"],
+    queryFn: async () => {
+      const url = import.meta.env.VITE_API_URL + API_ENDPOINTS.PURCHASES;
+      const res = await fetcher(url, {
+        method: "GET",
+      });
+      return await res.json();
+    },
+    initialData: [],
+  });
+
   return (
     <Table aria-label="Details table">
       <TableHeader className="font-bold">
@@ -50,12 +33,14 @@ export default function PurchasesTable() {
         <TableColumn className="font-bold">ЦЕНА</TableColumn>
       </TableHeader>
       <TableBody>
-        {dummyData.map((data, index) => (
+        {data.map((purchase, index) => (
           <TableRow key={index}>
-            <TableCell>{data.name}</TableCell>
-            <TableCell>{data.color}</TableCell>
-            <TableCell>{data.count}</TableCell>
-            <TableCell>{data.total_price}</TableCell>
+            <TableCell>{purchase.detail.name}</TableCell>
+            <TableCell>
+              {purchase.detail.color ? purchase.detail.color.name : "Нет"}
+            </TableCell>
+            <TableCell>{purchase.count}</TableCell>
+            <TableCell>{purchase.totalPrice}</TableCell>
           </TableRow>
         ))}
       </TableBody>

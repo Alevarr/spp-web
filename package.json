@@ -12,6 +12,7 @@
   "dependencies": {
     "@hookform/resolvers": "github:react-hook-form/resolvers",
     "@nextui-org/react": "^2.2.10",
+    "@tanstack/react-query": "^5.28.14",
     "@types/js-cookie": "^3.0.6",
     "framer-motion": "^11.0.24",
     "js-cookie": "^3.0.5",
