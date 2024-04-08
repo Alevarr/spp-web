@@ -24,6 +24,7 @@ export default function DetailsTable() {
     queryKey: ["details"],
     queryFn: async () => {
       const url = import.meta.env.VITE_API_URL + API_ENDPOINTS.DETAILS;
+      console.log(url);
       const res = await fetch(url, {
         method: "GET",
       });

@@ -74,10 +74,10 @@ export default function AddExistingDetailForm({
         count: data.count,
       }),
     });
-    if (!resPurchase.ok) toast.error("Ошибка");
+    onClose();
+    if (!resPurchase.ok) return toast.error("Ошибка");
     toast.success("Успешно");
     queryClient.invalidateQueries({ queryKey: ["purchases"] });
-    onClose();
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

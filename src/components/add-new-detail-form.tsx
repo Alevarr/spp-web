@@ -89,11 +89,11 @@ export default function AddNewDetailForm({ onClose }: { onClose: () => void }) {
         count: data.count,
       }),
     });
-    if (!resPurchase.ok) toast.error("Ошибка");
+    onClose();
+    if (!resPurchase.ok) return toast.error("Ошибка");
     toast.success("Успешно");
     queryClient.invalidateQueries({ queryKey: ["purchases"] });
     queryClient.invalidateQueries({ queryKey: ["details"] });
-    onClose();
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
